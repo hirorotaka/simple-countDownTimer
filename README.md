@@ -44,7 +44,7 @@ doc フォルダには、このプロジェクトに関するドキュメント�
 1. リポジトリをクローンする:
 
    ```bash
-   git clone https://github.com/<your-username>/React-TS-TailwindCSS-Vite-VS-Code-Template.git
+   git clone https://github.com/<自分の名前>/React-TS-TailwindCSS-Vite-VS-Code-Template.git
    ```
 
 2. 依存関係をインストールする:
@@ -68,7 +68,7 @@ doc フォルダには、このプロジェクトに関するドキュメント�
    
    ※originで管理していくため、またテンプレートの方へのコミット防止
    ```bash
-   git remote set-url origin git@github.com:hirorotaka/simple-passwordGenerator.git
+   git remote set-url origin git@github.com:hirorotaka/<コミット先のリポジトリ名>.git
    ```
    リポジトリが変更されていることの確認
    ```bash
