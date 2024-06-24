@@ -63,3 +63,14 @@ doc フォルダには、このプロジェクトに関するドキュメント�
 
 5. こちらの画面が表示されたらOK
 ![スクリーンショット 2024-06-24 16 07 38](https://github.com/hirorotaka/React-TS-TailwindCss-vite-Vscode-templete/assets/153050316/f150e6fa-4d67-4b99-af3e-13123d4b795a)
+
+6. リモートリポジトリの変更:
+   
+   ※originで管理していくため、またテンプレートの方へのコミット防止
+   ```bash
+   git remote set-url origin git@github.com:hirorotaka/simple-passwordGenerator.git
+   ```
+   リポジトリが変更されていることの確認
+   ```bash
+   git remote -v
+   ``` 
