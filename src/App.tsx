@@ -11,10 +11,21 @@ function App() {
     minute: 2,
     second: 3,
   });
+
+  const [checkBoxValues, setCheckBoxValues] = useState({
+    hour: 0,
+    minute: 0,
+    second: 0,
+  });
+
   return (
     <div className="container mx-auto px-4 py-8">
       <TimerDisplay displayTimer={displayTimer} />
-      <TimeSetter />
+      <TimeSetter
+        checkBoxValues={checkBoxValues}
+        setCheckBoxValues={setCheckBoxValues}
+        setDisplayTimer={setDisplayTimer}
+      />
       <TimerControls />
       <TimerStatus />
     </div>
