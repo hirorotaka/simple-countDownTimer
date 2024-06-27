@@ -19,6 +19,7 @@ interface TimeSetterProps {
     }>
   >;
   isRunning: boolean;
+  isPoused: boolean;
 }
 
 export const TimeSetter = ({
@@ -26,6 +27,7 @@ export const TimeSetter = ({
   setCheckBoxValues,
   setDisplayTimer,
   isRunning,
+  isPoused,
 }: TimeSetterProps) => {
   const handleSelectChange = (
     unit: 'hour' | 'minute' | 'second',
@@ -45,7 +47,7 @@ export const TimeSetter = ({
           style={{ maxHeight: '8rem', overflowY: 'auto' }}
           value={checkBoxValues.hour}
           onChange={(e) => handleSelectChange('hour', e)}
-          disabled={isRunning}
+          disabled={isRunning || isPoused}
         >
           {Array.from({ length: 24 }, (_, i) => (
             <option value={i} key={i}>
@@ -62,7 +64,7 @@ export const TimeSetter = ({
           style={{ maxHeight: '8rem', overflowY: 'auto' }}
           value={checkBoxValues.minute}
           onChange={(e) => handleSelectChange('minute', e)}
-          disabled={isRunning}
+          disabled={isRunning || isPoused}
         >
           {Array.from({ length: 60 }, (_, i) => (
             <option value={i} key={i}>
@@ -79,7 +81,7 @@ export const TimeSetter = ({
           style={{ maxHeight: '8rem', overflowY: 'auto' }}
           value={checkBoxValues.second}
           onChange={(e) => handleSelectChange('second', e)}
-          disabled={isRunning}
+          disabled={isRunning || isPoused}
         >
           {Array.from({ length: 60 }, (_, i) => (
             <option value={i} key={i}>

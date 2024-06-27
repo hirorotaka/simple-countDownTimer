@@ -29,6 +29,9 @@ function App() {
   // 起動・一時停止の状態
   const [isRunning, setIsRunning] = useState(false);
 
+  //
+  const [isPoused, setIsPaused] = useState(false);
+
   useEffect(() => {
     // 時間を設定していなかったら終了
     if (endTime === null) {
@@ -47,6 +50,9 @@ function App() {
       // 残り時間が0になったら終了
       if (diff <= 0) {
         setIsRunning(false);
+        setIsPaused(false);
+        setStartTime(null);
+        setEndTime(null);
         clearTimeout(timerId);
         setDisplayTimer({
           hour: checkBoxValues.hour,
@@ -100,6 +106,19 @@ function App() {
 
   const handlePauseTimer = () => {
     setIsRunning(false);
+    setIsPaused(true);
+  };
+
+  const handleResetTimer = () => {
+    setIsRunning(false);
+    setIsPaused(false);
+    setStartTime(null);
+    setEndTime(null);
+    setDisplayTimer({
+      hour: checkBoxValues.hour,
+      minute: checkBoxValues.minute,
+      second: checkBoxValues.second,
+    });
   };
 
   return (
@@ -110,10 +129,15 @@ function App() {
         setCheckBoxValues={setCheckBoxValues}
         setDisplayTimer={setDisplayTimer}
         isRunning={isRunning}
+        isPoused={isPoused}
       />
       <TimerControls
         handleStartTimer={handleStartTimer}
         handlePauseTimer={handlePauseTimer}
+        handleResetTimer={handleResetTimer}
+        isRunning={isRunning}
+        checkBoxValues={checkBoxValues}
+        isPoused={isPoused}
       />
       <TimerStatus />
     </div>
