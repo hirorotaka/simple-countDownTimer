@@ -97,6 +97,7 @@ function App() {
         checkBoxValues={checkBoxValues}
         setCheckBoxValues={setCheckBoxValues}
         setDisplayTimer={setDisplayTimer}
+        isRunning={isRunning}
       />
       <TimerControls handleStartTimer={handleStartTimer} />
       <TimerStatus />

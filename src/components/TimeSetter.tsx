@@ -18,12 +18,14 @@ interface TimeSetterProps {
       second: number;
     }>
   >;
+  isRunning: boolean;
 }
 
 export const TimeSetter = ({
   checkBoxValues,
   setCheckBoxValues,
   setDisplayTimer,
+  isRunning,
 }: TimeSetterProps) => {
   const handleSelectChange = (
     unit: 'hour' | 'minute' | 'second',
@@ -38,11 +40,12 @@ export const TimeSetter = ({
     <div className="mb-8 flex justify-center">
       <div className="relative inline-block">
         <select
-          className="block w-16 appearance-none rounded border border-gray-300 px-2 py-1 text-center"
+          className={`block w-16 appearance-none rounded border border-gray-300 px-2 py-1 text-center ${isRunning ? 'cursor-not-allowed' : ''}`}
           size={5}
           style={{ maxHeight: '8rem', overflowY: 'auto' }}
           value={checkBoxValues.hour}
           onChange={(e) => handleSelectChange('hour', e)}
+          disabled={isRunning}
         >
           {Array.from({ length: 24 }, (_, i) => (
             <option value={i} key={i}>
@@ -54,11 +57,12 @@ export const TimeSetter = ({
       <span className="mx-2">時間</span>
       <div className="relative inline-block">
         <select
-          className="block w-16 appearance-none rounded border border-gray-300 px-2 py-1 text-center"
+          className={`block w-16 appearance-none rounded border border-gray-300 px-2 py-1 text-center ${isRunning ? 'cursor-not-allowed' : ''}`}
           size={5}
           style={{ maxHeight: '8rem', overflowY: 'auto' }}
           value={checkBoxValues.minute}
           onChange={(e) => handleSelectChange('minute', e)}
+          disabled={isRunning}
         >
           {Array.from({ length: 60 }, (_, i) => (
             <option value={i} key={i}>
@@ -70,11 +74,12 @@ export const TimeSetter = ({
       <span className="mx-2">分</span>
       <div className="relative inline-block">
         <select
-          className="block w-16 appearance-none rounded border border-gray-300 px-2 py-1 text-center"
+          className={`block w-16 appearance-none rounded border border-gray-300 px-2 py-1 text-center ${isRunning ? 'cursor-not-allowed' : ''}`}
           size={5}
           style={{ maxHeight: '8rem', overflowY: 'auto' }}
           value={checkBoxValues.second}
           onChange={(e) => handleSelectChange('second', e)}
+          disabled={isRunning}
         >
           {Array.from({ length: 60 }, (_, i) => (
             <option value={i} key={i}>
