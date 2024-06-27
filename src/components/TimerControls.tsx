@@ -1,8 +1,12 @@
 interface TimerControlsProps {
   handleStartTimer: () => void;
+  handlePauseTimer: () => void;
 }
 
-export const TimerControls = ({ handleStartTimer }: TimerControlsProps) => {
+export const TimerControls = ({
+  handleStartTimer,
+  handlePauseTimer,
+}: TimerControlsProps) => {
   return (
     <div className="mb-8 flex justify-center space-x-4">
       <button
@@ -11,7 +15,10 @@ export const TimerControls = ({ handleStartTimer }: TimerControlsProps) => {
       >
         開始
       </button>
-      <button className="cursor-pointer rounded bg-yellow-500 px-4 py-2 text-white transition duration-300 hover:bg-yellow-600 active:bg-yellow-700">
+      <button
+        className="cursor-pointer rounded bg-yellow-500 px-4 py-2 text-white transition duration-300 hover:bg-yellow-600 active:bg-yellow-700"
+        onClick={handlePauseTimer}
+      >
         一時停止
       </button>
       <button className="cursor-pointer rounded bg-gray-500 px-4 py-2 text-white transition duration-300 hover:bg-gray-600 active:bg-gray-700">

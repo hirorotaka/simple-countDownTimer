@@ -22,21 +22,29 @@ function App() {
 
   //開始時刻表示用
   const [startTime, setStartTime] = useState<number | null>(null);
+
+  //終了時刻表示用
   const [endTime, setEndTime] = useState<number | null>(null);
 
+  // 起動・一時停止の状態
   const [isRunning, setIsRunning] = useState(false);
 
   useEffect(() => {
+    // 時間を設定していなかったら終了
+    if (endTime === null) {
+      setIsRunning(false);
+      return;
+    }
+
+    // 時間を設定していたらタイマーを開始
     let timerId: number | undefined;
 
     const intervalTimer = () => {
-      if (endTime === null) return;
-
       // 終了時刻と現在時刻の差を計算
       const now = Date.now();
       const diff = endTime - now;
 
-      // 0になったら終了
+      // 残り時間が0になったら終了
       if (diff <= 0) {
         setIsRunning(false);
         clearTimeout(timerId);
@@ -46,20 +54,20 @@ function App() {
           second: checkBoxValues.second,
         });
         return;
+      } else {
+        // 経過時間を表示用に変換
+        setDisplayTimer({
+          hour: Math.floor(diff / 3600000),
+          minute: Math.floor((diff % 3600000) / 60000),
+          second: Math.floor((diff % 60000) / 1000),
+        });
       }
 
-      console.log(diff);
-
-      // 経過時間を表示用に変換
-      setDisplayTimer({
-        hour: Math.floor(diff / 3600000),
-        minute: Math.floor((diff % 3600000) / 60000),
-        second: Math.floor((diff % 60000) / 1000),
-      });
-
       if (isRunning) {
-        // isRunning が true の間だけ再帰的に呼び出す
+        // カウントダウンの間だけ再帰的に呼び出す
         timerId = setTimeout(intervalTimer, 1000);
+      } else {
+        clearTimeout(timerId);
       }
     };
 
@@ -90,6 +98,10 @@ function App() {
     setIsRunning(true);
   };
 
+  const handlePauseTimer = () => {
+    setIsRunning(false);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <TimerDisplay displayTimer={displayTimer} />
@@ -99,7 +111,10 @@ function App() {
         setDisplayTimer={setDisplayTimer}
         isRunning={isRunning}
       />
-      <TimerControls handleStartTimer={handleStartTimer} />
+      <TimerControls
+        handleStartTimer={handleStartTimer}
+        handlePauseTimer={handlePauseTimer}
+      />
       <TimerStatus />
     </div>
   );
