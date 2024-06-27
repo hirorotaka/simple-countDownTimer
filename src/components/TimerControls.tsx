@@ -8,7 +8,7 @@ interface TimerControlsProps {
     minute: number;
     second: number;
   };
-  isPoused: boolean;
+  isPaused: boolean;
 }
 
 export const TimerControls = ({
@@ -17,7 +17,7 @@ export const TimerControls = ({
   handleResetTimer,
   isRunning,
   checkBoxValues,
-  isPoused,
+  isPaused,
 }: TimerControlsProps) => {
   // checkBoxValuesの合計を計算
   const totalCheckBoxValues =
@@ -37,7 +37,7 @@ export const TimerControls = ({
           onClick={handleStartTimer}
           disabled={totalCheckBoxValues === 0}
         >
-          {isPoused ? '再開' : '開始'}
+          {isPaused ? '再開' : '開始'}
         </button>
       )}
       <button

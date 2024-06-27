@@ -20,17 +20,17 @@ function App() {
     second: 0,
   });
 
-  //開始時刻表示用
-  const [startTime, setStartTime] = useState<number | null>(null);
+  //開始した時間
+  const [firstClicktime, setFirstClickTime] = useState<number | null>(null);
 
-  //終了時刻表示用
+  //終了する時間
   const [endTime, setEndTime] = useState<number | null>(null);
 
-  // 起動・一時停止の状態
+  // 起動・停止の状態
   const [isRunning, setIsRunning] = useState(false);
 
-  //
-  const [isPoused, setIsPaused] = useState(false);
+  //  一時停止の状態
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
     // 時間を設定していなかったら終了
@@ -51,7 +51,6 @@ function App() {
       if (diff <= 0) {
         setIsRunning(false);
         setIsPaused(false);
-        setStartTime(null);
         setEndTime(null);
         clearTimeout(timerId);
         setDisplayTimer({
@@ -99,9 +98,13 @@ function App() {
       displayTimer.hour * 3600000 +
       displayTimer.minute * 60000 +
       displayTimer.second * 1000;
-    setStartTime(newStartTime);
     setEndTime(newEndTime);
     setIsRunning(true);
+
+    // 最初のクリック時刻をミリ秒で設定
+    if (firstClicktime === null) {
+      setFirstClickTime(newStartTime);
+    }
   };
 
   const handlePauseTimer = () => {
@@ -112,8 +115,8 @@ function App() {
   const handleResetTimer = () => {
     setIsRunning(false);
     setIsPaused(false);
-    setStartTime(null);
     setEndTime(null);
+    setFirstClickTime(null);
     setDisplayTimer({
       hour: checkBoxValues.hour,
       minute: checkBoxValues.minute,
@@ -123,23 +126,23 @@ function App() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <TimerStatus firstClicktime={firstClicktime} endTime={endTime} />
       <TimerDisplay displayTimer={displayTimer} />
-      <TimeSetter
-        checkBoxValues={checkBoxValues}
-        setCheckBoxValues={setCheckBoxValues}
-        setDisplayTimer={setDisplayTimer}
-        isRunning={isRunning}
-        isPoused={isPoused}
-      />
       <TimerControls
         handleStartTimer={handleStartTimer}
         handlePauseTimer={handlePauseTimer}
         handleResetTimer={handleResetTimer}
         isRunning={isRunning}
         checkBoxValues={checkBoxValues}
-        isPoused={isPoused}
+        isPaused={isPaused}
       />
-      <TimerStatus />
+      <TimeSetter
+        checkBoxValues={checkBoxValues}
+        setCheckBoxValues={setCheckBoxValues}
+        setDisplayTimer={setDisplayTimer}
+        isRunning={isRunning}
+        isPaused={isPaused}
+      />
     </div>
   );
 }
