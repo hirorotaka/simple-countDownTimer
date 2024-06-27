@@ -33,7 +33,7 @@ export const TimeSetter = ({
     setCheckBoxValues((prev) => ({ ...prev, [unit]: value }));
     setDisplayTimer((prev) => ({ ...prev, [unit]: value }));
   };
-  console.log(checkBoxValues);
+
   return (
     <div className="mb-8 flex justify-center">
       <div className="relative inline-block">
