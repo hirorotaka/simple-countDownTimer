@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import { TimeSetter } from './components/TimeSetter';
 import { TimerControls } from './components/TimerControls';
@@ -6,213 +6,144 @@ import { TimerDisplay } from './components/TimerDisplay';
 import { TimerStatus } from './components/TimerStatus';
 import { TimerTitle } from './components/TimerTitle';
 
-interface TimerState {
-  hour: number;
-  minute: number;
-  second: number;
-  startTime: number | null;
-  pauseTime: number | null;
-  duration: number;
-  isRunning: boolean;
-  isPaused: boolean;
-}
-
 function App() {
-  const [timerState, setTimerState] = useState<TimerState>({
+  //タイマー表示用
+  const [displayTimer, setDisplayTimer] = useState({
     hour: 0,
     minute: 0,
     second: 0,
-    startTime: null,
-    pauseTime: null,
-    duration: 0,
-    isRunning: false,
-    isPaused: false,
   });
 
+  // チェックボックスの値を設定
   const [checkBoxValues, setCheckBoxValues] = useState({
     hour: 0,
     minute: 0,
     second: 0,
   });
 
-  const [currentTime, setCurrentTime] = useState<Date | null>(null);
-  const [scheduledEnd, setScheduledEnd] = useState<Date | null>(null);
-  const [stayDuration, setstayDuration] = useState(0);
+  //開始した時間
+  const [firstClicktime, setFirstClickTime] = useState<number | null>(null);
+
+  //終了する時間
+  const [endTime, setEndTime] = useState<number | null>(null);
+
+  // 起動・停止の状態
+  const [isRunning, setIsRunning] = useState(false);
+
+  //  一時停止の状態
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
+    // 時間を設定していなかったら終了
+    if (endTime === null) {
+      setIsRunning(false);
+      return;
+    }
+
+    // 時間を設定していたらタイマーを開始
     let timerId: number | undefined;
 
-    const updateTimer = () => {
-      if (
-        timerState.isRunning &&
-        !timerState.isPaused &&
-        timerState.startTime !== null
-      ) {
-        const now = Date.now();
-        const elapsed = now - timerState.startTime;
-        const remaining = timerState.duration - elapsed;
+    const intervalTimer = () => {
+      // 終了時刻と現在時刻の差を計算
+      const now = Date.now();
+      const diff = endTime - now;
 
-        if (remaining <= 0) {
-          clearTimeout(timerId);
-          setTimerState((prev) => ({
-            ...prev,
-            isRunning: false,
-            isPaused: false,
-            startTime: null,
-            pauseTime: null,
-            hour: checkBoxValues.hour,
-            minute: checkBoxValues.minute,
-            second: checkBoxValues.second,
-            duration: 0,
-          }));
-        } else {
-          const remainingSeconds = Math.floor(remaining / 1000);
-          setTimerState((prev) => ({
-            ...prev,
-            hour: Math.floor(remainingSeconds / 3600),
-            minute: Math.floor((remainingSeconds % 3600) / 60),
-            second: remainingSeconds % 60,
-          }));
-        }
-        timerId = setTimeout(updateTimer, 1000); // 1秒ごとに更新
+      // 残り時間が0になったら終了
+      if (diff <= 0) {
+        setIsRunning(false);
+        setIsPaused(false);
+        setEndTime(null);
+        clearTimeout(timerId);
+        setDisplayTimer({
+          hour: checkBoxValues.hour,
+          minute: checkBoxValues.minute,
+          second: checkBoxValues.second,
+        });
+        return;
+      } else {
+        // 経過時間を表示用に変換
+        setDisplayTimer({
+          hour: Math.floor(diff / 3600000),
+          minute: Math.floor((diff % 3600000) / 60000),
+          second: Math.floor((diff % 60000) / 1000),
+        });
+      }
+
+      if (isRunning) {
+        // カウントダウンの間だけ再帰的に呼び出す
+        timerId = setTimeout(intervalTimer, 1000);
+      } else {
+        clearTimeout(timerId);
       }
     };
 
-    if (timerState.isRunning && !timerState.isPaused) {
-      updateTimer();
+    // 最初の呼び出し
+    if (isRunning) {
+      intervalTimer();
     }
 
     return () => {
-      if (timerId) clearTimeout(timerId);
+      if (timerId) {
+        clearTimeout(timerId);
+      }
     };
-  }, [
-    timerState.isRunning,
-    timerState.isPaused,
-    timerState.startTime,
-    timerState.duration,
-    checkBoxValues,
-  ]);
-
-  const handleSetTimer = useCallback(
-    (unit: 'hour' | 'minute' | 'second', value: number) => {
-      setTimerState((prev) => {
-        const newDuration =
-          (unit === 'hour' ? value : prev.hour) * 3600000 +
-          (unit === 'minute' ? value : prev.minute) * 60000 +
-          (unit === 'second' ? value : prev.second) * 1000;
-        return {
-          ...prev,
-          [unit]: value,
-          duration: newDuration,
-        };
-      });
-      setCheckBoxValues((prev) => ({
-        ...prev,
-        [unit]: value,
-      }));
-    },
-    []
-  );
+  }, [isRunning]);
 
   const handleStartTimer = () => {
-    const newTimeState = {
-      ...timerState,
-      isRunning: true,
-      isPaused: false,
-      startTime: Date.now(),
-    };
-    setTimerState(newTimeState);
+    //開始時刻をミリ秒で設定
+    const newStartTime = Date.now();
 
-    if (currentTime === null) {
-      setCurrentTime(new Date());
-    }
+    //終了時刻をミリ秒で設定
+    const newEndTime =
+      newStartTime +
+      displayTimer.hour * 3600000 +
+      displayTimer.minute * 60000 +
+      displayTimer.second * 1000;
+    setEndTime(newEndTime);
+    setIsRunning(true);
 
-    if (scheduledEnd === null) {
-      const newScheduledEnd = new Date(
-        newTimeState.startTime + newTimeState.duration
-      );
-      setScheduledEnd(newScheduledEnd);
+    // 最初のクリック時刻をミリ秒で設定
+    if (firstClicktime === null) {
+      setFirstClickTime(newStartTime);
     }
   };
 
-  const handlePauseTimer = useCallback(() => {
-    setTimerState((prev) => ({
-      ...prev,
-      isPaused: true,
-      pauseTime: Date.now(),
-    }));
-  }, []);
+  const handlePauseTimer = () => {
+    setIsRunning(false);
+    setIsPaused(true);
+  };
 
-  const handleResumeTimer = useCallback(() => {
-    setTimerState((prev) => {
-      if (prev.startTime !== null && prev.pauseTime !== null) {
-        const pausedDuration = Date.now() - prev.pauseTime;
-        const newStartTime = prev.startTime + pausedDuration;
-
-        // scheduledEnd を更新
-        setScheduledEnd((prevScheduledEnd) => {
-          if (prevScheduledEnd) {
-            return new Date(prevScheduledEnd.getTime() + pausedDuration);
-          }
-          return prevScheduledEnd;
-        });
-
-        setstayDuration((prev) => prev + pausedDuration);
-
-        return {
-          ...prev,
-          isPaused: false,
-          startTime: newStartTime,
-          pauseTime: null,
-        };
-      }
-      return prev;
-    });
-  }, [stayDuration]);
-
-  const handleResetTimer = useCallback(() => {
-    setTimerState((prev) => ({
-      ...prev,
+  const handleResetTimer = () => {
+    setIsRunning(false);
+    setIsPaused(false);
+    setEndTime(null);
+    setFirstClickTime(null);
+    setDisplayTimer({
       hour: checkBoxValues.hour,
       minute: checkBoxValues.minute,
       second: checkBoxValues.second,
-      startTime: null,
-      pauseTime: null,
-      duration:
-        checkBoxValues.hour * 3600000 +
-        checkBoxValues.minute * 60000 +
-        checkBoxValues.second * 1000,
-      isRunning: false,
-      isPaused: false,
-    }));
-
-    setCurrentTime(null);
-    setScheduledEnd(null);
-  }, [checkBoxValues]);
+    });
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
       <TimerTitle />
-      <TimerStatus
-        scheduledEnd={scheduledEnd}
-        currentTime={currentTime}
-        stayDuration={stayDuration}
-      />
-      <TimerDisplay timerState={timerState} />
+      <TimerStatus firstClicktime={firstClicktime} endTime={endTime} />
+      <TimerDisplay displayTimer={displayTimer} />
       <TimerControls
         handleStartTimer={handleStartTimer}
         handlePauseTimer={handlePauseTimer}
-        handleResumeTimer={handleResumeTimer}
         handleResetTimer={handleResetTimer}
-        isRunning={timerState.isRunning}
-        isPaused={timerState.isPaused}
-        duration={timerState.duration}
+        isRunning={isRunning}
+        checkBoxValues={checkBoxValues}
+        isPaused={isPaused}
       />
       <TimeSetter
-        handleSetTimer={handleSetTimer}
         checkBoxValues={checkBoxValues}
         setCheckBoxValues={setCheckBoxValues}
-        timerState={timerState}
+        setDisplayTimer={setDisplayTimer}
+        isRunning={isRunning}
+        isPaused={isPaused}
       />
     </div>
   );

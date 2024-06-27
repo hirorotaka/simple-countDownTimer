@@ -1,68 +1,50 @@
 interface TimerControlsProps {
   handleStartTimer: () => void;
   handlePauseTimer: () => void;
-  handleResumeTimer: () => void;
   handleResetTimer: () => void;
   isRunning: boolean;
+  checkBoxValues: {
+    hour: number;
+    minute: number;
+    second: number;
+  };
   isPaused: boolean;
-  duration: number;
 }
 
 export const TimerControls = ({
   handleStartTimer,
   handlePauseTimer,
-  handleResumeTimer,
   handleResetTimer,
   isRunning,
+  checkBoxValues,
   isPaused,
-  duration,
 }: TimerControlsProps) => {
-  const isTimerSet = duration > 0;
-
+  // checkBoxValuesの合計を計算
+  const totalCheckBoxValues =
+    checkBoxValues.hour + checkBoxValues.minute + checkBoxValues.second;
   return (
     <div className="mb-8 flex justify-center space-x-4">
-      {!isRunning && !isPaused && (
+      {isRunning ? (
         <button
-          onClick={handleStartTimer}
-          disabled={!isTimerSet}
-          className={`w-40 rounded px-4 py-2 font-bold text-white ${
-            isTimerSet
-              ? 'bg-blue-500 hover:bg-blue-600'
-              : 'cursor-not-allowed bg-blue-300'
-          }`}
-        >
-          開始
-        </button>
-      )}
-      {isRunning && !isPaused && (
-        <button
+          className="w-40 cursor-pointer rounded bg-yellow-500 px-4 py-2 text-white transition duration-300 hover:bg-yellow-600 active:bg-yellow-700"
           onClick={handlePauseTimer}
-          className="w-40 rounded bg-yellow-500 px-4 py-2 font-bold text-white hover:bg-yellow-600"
         >
           一時停止
         </button>
-      )}
-      {isPaused && (
+      ) : (
         <button
-          onClick={handleResumeTimer}
-          className="w-40 rounded bg-green-500 px-4 py-2 font-bold text-white hover:bg-green-600"
+          className={`w-40 cursor-pointer rounded  px-4 py-2 text-white  ${totalCheckBoxValues === 0 ? 'cursor-not-allowed bg-gray-400 opacity-50' : 'bg-green-500 transition duration-300 hover:bg-green-600 active:bg-green-700'} `}
+          onClick={handleStartTimer}
+          disabled={totalCheckBoxValues === 0}
         >
-          再開
+          {isPaused ? '再開' : '開始'}
         </button>
       )}
       <button
+        className="cursor-pointer rounded bg-gray-500 px-4 py-2 text-white transition duration-300 hover:bg-gray-600 active:bg-gray-700"
         onClick={handleResetTimer}
-        disabled={!isTimerSet && !isRunning && !isPaused}
-        className={`rounded px-4 py-2 text-white transition duration-300 ${
-          isTimerSet || isRunning || isPaused
-            ? 'cursor-pointer bg-gray-500 hover:bg-gray-600 active:bg-gray-700'
-            : 'cursor-not-allowed bg-gray-300'
-        }`}
       >
         リセット
-      </button>
-      <button className="cursor-pointer rounded bg-sky-500 px-4 py-2 text-white transition duration-300 hover:bg-sky-600 active:bg-sky-700">
-        終了
       </button>
     </div>
   );

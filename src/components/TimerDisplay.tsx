@@ -1,12 +1,13 @@
 interface TimerDisplayProps {
-  timerState: {
+  displayTimer: {
     hour: number;
     minute: number;
     second: number;
   };
 }
 
-export const TimerDisplay = ({ timerState }: TimerDisplayProps) => {
+//タイマー表示
+export const TimerDisplay = ({ displayTimer }: TimerDisplayProps) => {
   return (
     <div className="text-center">
       <div className="mb-8 flex justify-center">
@@ -16,9 +17,9 @@ export const TimerDisplay = ({ timerState }: TimerDisplayProps) => {
             style={{ minWidth: '240px' }}
           >
             {/* 文字列が２桁になるように前に0を追加 */}
-            {String(timerState.hour).padStart(2, '0')}:
-            {String(timerState.minute).padStart(2, '0')}:
-            {String(timerState.second).padStart(2, '0')}
+            {String(displayTimer.hour).padStart(2, '0')}:
+            {String(displayTimer.minute).padStart(2, '0')}:
+            {String(displayTimer.second).padStart(2, '0')}
           </div>
         </div>
       </div>
