@@ -13,4 +13,5 @@
 - リセットボタン: タイマーを初期設定時間にリセットする
 
 ### 画面
-![Uploading chrome-capture-2024-6-27.gif…]()
+
+![chrome-capture-2024-6-27](https://github.com/hirorotaka/simple-countDownTimer/assets/153050316/ee69a647-79bb-48a6-849b-23641c09ad1f)
