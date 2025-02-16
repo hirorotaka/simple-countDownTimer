@@ -1,7 +1,7 @@
-interface TimerStatusProps {
+type TimerStatusProps = {
   firstClicktime: number | null;
   endTime: number | null;
-}
+};
 
 export const TimerStatus = ({ firstClicktime, endTime }: TimerStatusProps) => {
   let firstHours = '--';

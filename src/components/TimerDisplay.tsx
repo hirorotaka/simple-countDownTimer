@@ -1,10 +1,10 @@
-interface TimerDisplayProps {
+type TimerDisplayProps = {
   displayTimer: {
     hour: number;
     minute: number;
     second: number;
   };
-}
+};
 
 //タイマー表示
 export const TimerDisplay = ({ displayTimer }: TimerDisplayProps) => {

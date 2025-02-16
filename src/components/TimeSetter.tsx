@@ -1,18 +1,20 @@
-interface TimeSetterProps {
+import { ChangeEvent, Dispatch, SetStateAction } from 'react';
+
+type TimeSetterProps = {
   checkBoxValues: {
     hour: number;
     minute: number;
     second: number;
   };
-  setCheckBoxValues: React.Dispatch<
-    React.SetStateAction<{
+  setCheckBoxValues: Dispatch<
+    SetStateAction<{
       hour: number;
       minute: number;
       second: number;
     }>
   >;
-  setDisplayTimer: React.Dispatch<
-    React.SetStateAction<{
+  setDisplayTimer: Dispatch<
+    SetStateAction<{
       hour: number;
       minute: number;
       second: number;
@@ -20,7 +22,7 @@ interface TimeSetterProps {
   >;
   isRunning: boolean;
   isPaused: boolean;
-}
+};
 
 export const TimeSetter = ({
   checkBoxValues,
@@ -31,7 +33,7 @@ export const TimeSetter = ({
 }: TimeSetterProps) => {
   const handleSelectChange = (
     unit: 'hour' | 'minute' | 'second',
-    e: React.ChangeEvent<HTMLSelectElement>
+    e: ChangeEvent<HTMLSelectElement>
   ) => {
     const value = parseInt(e.target.value, 10);
     setCheckBoxValues((prev) => ({ ...prev, [unit]: value }));
