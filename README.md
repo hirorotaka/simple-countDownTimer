@@ -1,6 +1,6 @@
-# React + TypeScript + Vite
+# カウントダウンタイマー
 
-カウントダウンタイマーの作成
+- URL:https://simple-countdowntimer.netlify.app
 
 ### 概要
 
